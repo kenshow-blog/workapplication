@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    tty: true
+    stdin_open: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./workapp:/workapp
+    command: >
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py runserver 0.0.0.0:8000"
+    depends_on: 
+      - react
+  react:
+    build:
+      context: .
+      dockerfile: "./Dockerfile-nodejs"
+    volumes:
+      - ./work_react:/work_react
+    command: >
+      sh -c "cd work_react && npm start"
+    ports:
+      - "3000:3000"
+
